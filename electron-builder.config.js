@@ -3,7 +3,7 @@ const isWin32 = process.platform === 'win32';
 
 module.exports = {
   appId: 'com.electron.app',
-  productName: 'electron-react-init',
+  productName: 'sost-remote-control',
   directories: {
     buildResources: 'build',
   },
@@ -14,7 +14,7 @@ module.exports = {
     '!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}',
     '!{.env,.env.*,.npmrc,pnpm-lock.yaml}',
   ],
-  artifactName: 'pc-app-${os}-${arch}-${version}.${ext}',
+  artifactName: 'sost-remote-control-${os}-${arch}-${version}.${ext}',
   asarUnpack: ['resources/**'],
   extraResources: [
     {
