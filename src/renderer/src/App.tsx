@@ -1,35 +1,56 @@
-import Versions from './components/Versions';
-import electronLogo from './assets/electron.svg';
+import { useEffect, useState } from 'react'
 
 function App(): JSX.Element {
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping');
+  const [remoteCode, setRemoteCode] = useState('')
+  const [localCode, setLocalCode] = useState('')
+  const [controlText, setControlText] = useState('')
+
+  const login = async function (): Promise<void> {
+    const code = await window.electron.ipcRenderer.invoke('login')
+    setLocalCode(code)
+  }
+
+  const handleControlChange = (e, name, type): void => {
+    let text = ''
+    if (type === 1) {
+      text = `正在远程控制${name}`
+    } else if (type === 2) {
+      text = `正在被${name}远程控制`
+    }
+    setControlText(text)
+  }
+
+  const startControl = (remoteCode): void => {
+    window.electron.ipcRenderer.send('control', remoteCode)
+  }
+
+  useEffect(() => {
+    login()
+    window.electron.ipcRenderer.on('control-state-change', handleControlChange)
+    return (): void => {
+      window.electron.ipcRenderer.removeListener('control-state-change', handleControlChange);
+    }
+  }, [])
 
   return (
     <>
-      <img alt="logo" className="logo" src={electronLogo} />
-      <div className="creator">Powered by electron-vite</div>
-      <div className="text">
-        Build an Electron app with <span className="react">React</span>
-        &nbsp;and <span className="ts">TypeScript</span>
+      <div className="App">
+        {controlText === '' ? (
+          <>
+            <div>你的控制码{localCode}</div>
+            <input
+              type="text"
+              value={remoteCode}
+              onChange={(e) => setRemoteCode(e.target.value)}
+            ></input>
+            <button onClick={() => startControl(remoteCode)}>开始控制</button>
+          </>
+        ) : (
+          <div>{controlText}</div>
+        )}
       </div>
-      <p className="tip">
-        Please try pressing <code>F12</code> to open the devTool
-      </p>
-      <div className="actions">
-        <div className="action">
-          <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
-            Documentation
-          </a>
-        </div>
-        <div className="action">
-          <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
-            Send IPC
-          </a>
-        </div>
-      </div>
-      <Versions></Versions>
     </>
-  );
+  )
 }
 
-export default App;
+export default App
