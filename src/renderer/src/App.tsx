@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import VideoControl from './pages/control/VideoControl'
 
 function App(): JSX.Element {
   const [remoteCode, setRemoteCode] = useState('')
@@ -34,7 +35,14 @@ function App(): JSX.Element {
 
   return (
     <>
-      <div className="App">
+      <VideoControl />
+    </>
+  )  
+}
+ 
+export default App
+
+/*<div className="App">
         {controlText === '' ? (
           <>
             <div>你的控制码{localCode}</div>
@@ -48,9 +56,4 @@ function App(): JSX.Element {
         ) : (
           <div>{controlText}</div>
         )}
-      </div>
-    </>
-  )
-}
-
-export default App
+      </div> */
